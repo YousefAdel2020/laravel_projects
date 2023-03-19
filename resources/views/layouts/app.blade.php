@@ -16,6 +16,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
+                {{-- * route()  is global helper method--}}
                 <a class="nav-link active" href="{{route('posts.index')}}">All Posts</a>
             </div>
         </div>

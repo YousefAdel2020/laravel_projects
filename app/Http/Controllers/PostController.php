@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    //* we use (index()) ==> as naming convension for get_all_posts
     public function index()
     {
         $allPosts = [
@@ -31,9 +32,13 @@ class PostController extends Controller
             ],
         ];
 
-        return view('posts.index', ['posts' => $allPosts]);
+        //* posts.index ==> mean get the file in <index.blade.php> from directory <posts>
+        return view('post.index', ['posts' => $allPosts]);
     }
 
+
+    //* we use (show()) ==> as naming convension for get_post
+    //* $id is take the parameter in url /posts/{post}
     public function show($id)
     {
 
@@ -47,6 +52,39 @@ class PostController extends Controller
 
 
 
-        return view('posts.show', ['post' => $post]);
+        return view('post.show', ['post' => $post]);
+    }
+
+
+    public function create()
+    {
+        return view('post.create');
+    }
+
+
+    public function store()
+    {
+
+        //! to_route() take the alias name of the route not like view()
+        return to_route('posts.index');
+    }
+
+
+    public function edit($id)
+    {
+
+        return view('post.edit');
+    }
+
+    public function update($id)
+    {
+
+        return to_route('posts.index');
+    }
+
+
+    public function destroy($id)
+    {
+        return to_route('posts.index');
     }
 }

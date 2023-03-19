@@ -1,4 +1,4 @@
-@extends('layout.app');
+@extends('layouts.app');
 
 
 @section('content')
@@ -6,7 +6,7 @@
 
 <div class="container">
     <div class="text-center">
-        <button type="button" class="mt-4 btn btn-success">Create Post</button>
+        <a href="{{route('posts.create')}}" class="mt-4 btn btn-success">Create Post</a>
     </div>
     <table class="table mt-4">
         <thead>
@@ -27,9 +27,10 @@
                 <td>{{$post['posted_by']}}</td>
                 <td>{{$post['created_at']}}</td>
                 <td>
-                    <a href="" class="btn btn-info">View</a>
-                    <a href="#" class="btn btn-primary">Edit</a>
-                    <a href="#" class="btn btn-danger">Delete</a>
+                    {{-- * send the request parameter with route()  --}}
+                    <a href="{{route('posts.show',$post['id'])}}" class="btn btn-info">View</a>
+                    <a href="{{route('posts.edit',$post['id'])}}" class="btn btn-primary">Edit</a>
+                    <a href="{{route('posts.destroy',$post['id'])}}" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         @endforeach
