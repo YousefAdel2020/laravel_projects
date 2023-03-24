@@ -4,7 +4,7 @@
 @section('content')
     
 
-<div class="container">
+
     <div class="text-center">
         <a href="{{route('posts.create')}}" class="mt-4 btn btn-success">Create Post</a>
     </div>
@@ -22,15 +22,29 @@
 
         @foreach($posts as $post)
             <tr>
-                <td>{{$post['id']}}</td>
+                {{--& we can use -> or [] to access the field because all() is magic function --}}
+                {{-- <td>{{$post['id']}}</td> --}}
+                <td>{{$post->id}}</td> 
                 <td>{{$post['title']}}</td>
-                <td>{{$post['posted_by']}}</td>
-                <td>{{$post['created_at']}}</td>
+                @if ($post->user)
+                    <td>{{$post->user->name}}</td>   
+
+                @else
+                <td>not found</td>  
+
+                @endif
+                
+                <td>{{$post['created_at']->toDateString()}}</td>
                 <td>
-                    {{-- * send the request parameter with route()  --}}
+                    {{-- * send the request parameter with route() the second parameter is the req.params for url  --}}
                     <a href="{{route('posts.show',$post['id'])}}" class="btn btn-info">View</a>
                     <a href="{{route('posts.edit',$post['id'])}}" class="btn btn-primary">Edit</a>
-                    <a href="{{route('posts.destroy',$post['id'])}}" class="btn btn-danger">Delete</a>
+                    <form action="{{ route('posts.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    {{-- <a href="{{route('posts.destroy',$post['id'])}}" class="btn btn-danger">Delete</a> --}}
                 </td>
             </tr>
         @endforeach
@@ -39,8 +53,10 @@
 
         </tbody>
     </table>
+   
 
-</div>
+{{--& for pagination  --}}
+{{ $posts->links() }}
 @endsection
 
 
