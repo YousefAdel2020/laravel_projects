@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
+use App\Jobs\PruneOldPostsJob;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -65,7 +67,7 @@ class PostController extends Controller
         //? third way
         // $post = Post::where('id', $id)->first(); //Post model object ... select * from posts where id = 1 limit 1;
 
-       
+      
 
         return view('post.show', ['post' => $post]);
     }
@@ -79,7 +81,7 @@ class PostController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
         //&  get the form data 
 
@@ -102,6 +104,10 @@ class PostController extends Controller
         $description=$request->description;
         $postCreator=$request->post_creator;
 
+        $image = $request->file('image')->getClientOriginalName();
+        $path =$request->file('image')->storeAs('images' , $image,'public');
+       // $image = $request->file('image')->store('images',['disk' => "public"]);
+
 
 
         //& insert the form data in database
@@ -110,7 +116,8 @@ class PostController extends Controller
         Post::create([
             'title'=>$title,
             'description'=>$description,
-            'user_id'=>$postCreator
+            'user_id'=>$postCreator,
+            'image'=>$path
         ]);
 
 
@@ -125,22 +132,27 @@ class PostController extends Controller
         $post= Post::find($id);
         $users=User::all();
         
+        
         return view('post.edit',['post'=>$post,'users'=>$users]);
     }
 
-    public function update(Request $request,$id)
+    public function update(StorePostRequest $request,$id)
     {
         
         $title=$request->title;
         $description=$request->description;
         $postCreator=$request->post_creator;
 
+        $image = $request->file('image')->getClientOriginalName();
+        $path =$request->file('image')->storeAs('images' , $image,'public');
+
         $post=Post::findorFail($id);
 
         $post->update([
             'title'=>$title,
             'description'=>$description,
-            'user_id'=>$postCreator
+            'user_id'=>$postCreator,
+            'image'=>$path
         ]);
 
         return to_route('posts.index');
@@ -154,4 +166,12 @@ class PostController extends Controller
         return redirect()->route('posts.index')->with('success', 'post deleted successfully');
        // return to_route('posts.index');
     }
+
+
+    public function removePosts()
+    {
+      PruneOldPostsJob::dispatch();
+    }
+
+
 }

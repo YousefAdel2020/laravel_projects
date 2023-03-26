@@ -5,8 +5,23 @@
 @endsection
 
 @section('content')
+
+
+{{-- & the validation error message --}}
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
     {{-- <form method="POST" action="{{route('posts.store')}}"> --}}
-        <form method="POST" action="{{route('posts.store')}}">
+        {{--& enctype="multipart/form-data" must put it in form to upload file in laravel  --}}
+        <form method="POST" action="{{route('posts.store')}}" enctype="multipart/form-data">
         {{-- ! add @csrf --}}
         @csrf
         <div class="mb-3">
@@ -26,6 +41,11 @@
                 @endforeach
             </select>
         </div>
+
+        <div class="mb-3">
+            <label for="user" class="form-label">Image</label>
+            <input class="form-control" name="image" type="file" id="formFile">
+          </div>
 
         <button class="btn btn-success">Submit</button>
     </form>

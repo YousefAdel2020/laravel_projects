@@ -8,6 +8,7 @@
             Post Info
         </div>
         <div class="card-body">
+            <img src="{{$post["image"]}}" style="width: 250px" alt="">
             <h5 class="card-title">Title: {{$post['title']}}</h5>
             <p class="card-text">Description: {{$post['description']}}</p>
         </div>

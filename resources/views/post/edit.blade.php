@@ -5,8 +5,22 @@
 @endsection
 
 @section('content')
+
+{{-- & the validation error message --}}
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
+
     {{-- <form method="POST" action="{{route('posts.store')}}"> --}}
-        <form method="POST" action="{{ route('posts.update',$post->id) }}">
+        <form method="POST" action="{{ route('posts.update',$post->id) }}" enctype="multipart/form-data">
         @csrf
         @method("put")
         <div class="mb-3">
@@ -31,6 +45,13 @@
                 @endforeach
             </select>
         </div>
+
+
+        <div class="mb-3">
+            <label for="user" class="form-label">Image</label>
+            <input class="form-control" name="image" type="file" id="formFile">
+          </div>
+
 
         <button class="btn btn-primary">update</button>
     </form>

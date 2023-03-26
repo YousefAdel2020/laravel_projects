@@ -21,26 +21,42 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+    //* remove old posts by queue jobs
+    Route::get("/posts/removeOld",[PostController::class,"removePosts"]);
+
+
 //* (name('posts.index')) ==> is alias name for route && we use it in front-end as {{route('posts.index')}}
-
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-
-Route::post('/posts',[PostController::class,'store'])->name('posts.store');
-
-Route::get('/posts/create',[PostController::class,'create'])->name('posts.create');
-
-Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+//* ->middleware(['auth']) and make anyone who isn’t authenticated to redirect back to login page
+//Route::get('/posts', [PostController::class, 'index'])->name('posts.index')->middleware(['auth']);
 
 
+//* to make group of routes to apply the same middlewares on it
+Route::group(['middleware' => ['auth']], function () {
+    
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 
-Route::get("/posts/{post}/edit",[PostController::class,'edit'])->name(('posts.edit'));
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 
-Route::put("/posts/{post}",[PostController::class,'update'])->name('posts.update');
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
 
-Route::delete("/posts/{post}",[PostController::class,'destroy'])->name('posts.destroy');
+    Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+
+    Route::get("/posts/{post}/edit", [PostController::class, 'edit'])->name(('posts.edit'));
+
+    Route::put("/posts/{post}", [PostController::class, 'update'])->name('posts.update');
+
+    Route::delete("/posts/{post}", [PostController::class, 'destroy'])->name('posts.destroy');
+
+    Route::post('/comments', [CommentController::class, "store"])->name("comments.store");
 
 
 
 
+});
 
-Route::post('/comments', [CommentController::class,"store"])->name("comments.store");
+
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

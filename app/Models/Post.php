@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Comment;
@@ -13,7 +15,8 @@ class Post extends Model
     protected $fillable=[
         'title',
         'description',
-        'user_id'
+        'user_id',
+        'image'
 
     ];
 
@@ -39,5 +42,30 @@ class Post extends Model
         return $this->morphMany(Comment::class,'commentable');
     }
 
+
+
+    use Sluggable;
+
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
+
+    protected function image():Attribute
+    {
+      return Attribute::make(
+        get: fn ($value) => asset("storage/". $value)
+      );
+  
+    }
     
 }
